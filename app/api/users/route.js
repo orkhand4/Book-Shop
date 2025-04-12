@@ -37,3 +37,19 @@ export async function POST(req) {
     { status: 200 }
   );
 }
+
+export async function DELETE(req) {
+  const body = req.json();
+  const { id } = body;
+
+  const findUser = users.find((user) => user.id == id);
+  if (!findUser) {
+    return NextResponse.json({ mes: "User not found by ID" }, { status: 404 });
+  }
+
+  const newUsers = users.filter((user) => user.id != id);
+  return NextResponse.json(
+    { mes: "User deleted by ID", data: newUsers },
+    { status: 200 }
+  );
+}
