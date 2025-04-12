@@ -23,5 +23,17 @@ export async function GET(req) {
 }
 
 export async function POST(req) {
-  return NextResponse.json({ mes: "This is POST method (Users)" });
+  const body = await req.json();
+
+  //const name = body.name;
+  const { id } = body;
+  const user = users.find((user) => user.id == id);
+  if (!user) {
+    return NextResponse.json({ mes: "User not found" }, { status: 404 });
+  }
+
+  return NextResponse.json(
+    { mes: "This is POST method (Users)", data: user },
+    { status: 200 }
+  );
 }
