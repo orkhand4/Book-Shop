@@ -1,21 +1,19 @@
-"use client"; // Müştəri tərəfində işləməsi üçün
+"use client"; 
 
 import { useEffect, useState } from "react";
 
 export default function Home() {
   const [books, setBooks] = useState([]);
 
-  // Kitabları çəkmək üçün useEffect
   useEffect(() => {
     const fetchBooks = async () => {
       try {
-        const res = await fetch("/api/books"); // Düzgün API endpoint-i istifadə edirik
+        const res = await fetch("/api/books");
         if (!res.ok) {
           throw new Error("Failed to fetch books");
         }
         const data = await res.json();
         
-        // Məlumatın düzgün formatda olub-olmaması yoxlanır
         if (Array.isArray(data.data)) {
           setBooks(data.data);
         } else {
@@ -40,11 +38,11 @@ export default function Home() {
               <img
                 src={book.imageUrl}
                 alt={book.title}
-                className="w-full h-64 object-cover mb-4 rounded"
+                className="w-full h-64 object-contain mb-4 rounded"
               />
-              <h2 className="text-xl font-semibold">{book.title}</h2>
-              <p className="text-gray-600">{book.author}</p>
-              <p className="text-gray-800 mt-2">{book.description}</p>
+              <h2 className="text-xl text-center mb-4 font-semibold">{book.name}</h2>
+              <p className="text-gray-600"><span className="text-black font-semibold">Author: </span>{book.author}</p>
+              <p className="text-gray-800 mt-2"> <span className="font-semibold">Description: </span>{book.description}</p>
               <p className="text-lg font-bold mt-4">{`$${book.price}`}</p>
               <button className="mt-4 py-2 px-4 bg-blue-500 text-white rounded hover:bg-blue-600">
                 View Details
@@ -52,7 +50,7 @@ export default function Home() {
             </div>
           ))
         ) : (
-          <p>No books available.</p> // Əgər kitablar yoxdursa, istifadəçiyə məlumat veririk
+          <p>No books available.</p> 
         )}
       </div>
     </div>

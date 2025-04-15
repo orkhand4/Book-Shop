@@ -1,4 +1,4 @@
-"use client"; // Müştəri tərəfində işləməsi üçün
+"use client";
 
 import { useState } from "react";
 
@@ -13,15 +13,14 @@ export default function AdminPanel() {
   const [books, setBooks] = useState([]);
   const [error, setError] = useState(null);
 
-  // Kitab əlavə etmək
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     if (!name || !price || !imageUrl || !description || !author || !category || !stockCount) {
       setError("All fields are required!");
       return;
     }
-
+  
     const newBook = { 
       name, 
       price, 
@@ -31,7 +30,9 @@ export default function AdminPanel() {
       category, 
       stockCount 
     };
-
+  
+    console.log("Submitting book data:", newBook);
+  
     try {
       const res = await fetch("/api/books", {
         method: "POST",
@@ -40,11 +41,11 @@ export default function AdminPanel() {
         },
         body: JSON.stringify(newBook),
       });
-
+  
       if (res.ok) {
         const data = await res.json();
         console.log("Book added:", data);
-        setBooks([...books, data.data]); // Yeni kitabı siyahıya əlavə edirik
+        setBooks([...books, data.data]); 
         setName("");
         setPrice("");
         setImageUrl("");
@@ -52,17 +53,21 @@ export default function AdminPanel() {
         setAuthor("");
         setCategory("");
         setStockCount("");
-        setError(null); // Hata mesajını təmizləyirik
+        setError(null); 
       } else {
-        setError("Failed to add the book");
+        const errorData = await res.json();  
+        setError("Failed to add the book: " + errorData.message);
+        console.error("Error adding book:", errorData);
       }
     } catch (error) {
       console.error("Error adding book:", error);
-      setError("Error adding book");
+      setError("Error adding book: " + error.message);
     }
   };
+  
+  
+  
 
-  // Kitabları yükləmək
   const loadBooks = async () => {
     try {
       const res = await fetch("/api/books");
@@ -73,7 +78,6 @@ export default function AdminPanel() {
     }
   };
 
-  // Kitab silmək
   const handleDelete = async (id) => {
     try {
       const res = await fetch(`/api/books/${id}`, {
@@ -95,7 +99,6 @@ export default function AdminPanel() {
     <div className="container mx-auto p-8">
       <h1 className="text-4xl font-bold mb-8">Admin Panel</h1>
 
-      {/* Kitab əlavə etmə forması */}
       <form onSubmit={handleSubmit} className="mb-8">
         <h2 className="text-2xl font-semibold mb-4">Add a New Book</h2>
         {error && <p className="text-red-500">{error}</p>}
@@ -157,7 +160,6 @@ export default function AdminPanel() {
         </div>
       </form>
 
-      {/* Kitab siyahısını göstərmək */}
       <div>
         <button
           onClick={loadBooks}
@@ -172,12 +174,12 @@ export default function AdminPanel() {
               <img
                 src={book.imageUrl}
                 alt={book.name}
-                className="w-full h-64 object-cover mb-4 rounded"
+                className="w-full h-64 object-contain mb-4 rounded"
               />
               <h2 className="text-xl font-semibold">{book.name}</h2>
-              <p className="text-gray-600">{book.price}</p>
-              <p className="text-gray-600">{book.author}</p>
-              <p className="text-gray-600">{book.category}</p>
+              <p className="text-gray-600">{book.price}$</p>
+              <p className="text-gray-600">Author: {book.author}</p>
+              <p className="text-gray-600">Category: {book.category}</p>
               <button
                 onClick={() => handleDelete(book._id)}
                 className="mt-4 py-2 px-4 bg-red-500 text-white rounded hover:bg-red-600"

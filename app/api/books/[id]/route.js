@@ -2,10 +2,9 @@ import { connectDB } from "@/lib/db";
 import { NextResponse } from "next/server";
 import { Book } from "@/lib/models/book";
 
-// GET - Kitabın id ilə alınması
-export async function GET(req, { params }) {
+export async function GET({ params }) {
   try {
-    const { id } = params; // Burada await istifadə etməyə ehtiyac yoxdur
+    const { id } = params; 
     await connectDB();
     const findBookById = await Book.findById(id);
 
@@ -25,10 +24,9 @@ export async function GET(req, { params }) {
   }
 }
 
-// DELETE - Kitabın id ilə silinməsi
 export async function DELETE(req, { params }) {
   try {
-    const { id } = params; // Burada await istifadə etməyə ehtiyac yoxdur
+    const { id } = await params; 
     await connectDB();
     const findBookById = await Book.findByIdAndDelete(id);
 
